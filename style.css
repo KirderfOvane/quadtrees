@@ -1,0 +1,35 @@
+body {
+  color: white;
+  background-color: black;
+}
+h1 {
+  margin: auto;
+  padding: 0;
+}
+#canvasLayers {
+  width: 400px;
+  height: 400px;
+  position: relative;
+  margin: 0;
+  background-color: white;
+  border: 1px solid red;
+}
+#object-layer {
+  position: absolute;
+}
+#annotation-layer {
+  position: absolute;
+  display: "none";
+  background-color: transparent;
+}
+button {
+  border: 1px solid white;
+  padding: 1rem;
+  margin: 1rem;
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+}
+button:hover {
+  opacity: 0.8;
+}
