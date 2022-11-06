@@ -28,6 +28,6 @@ function populateCanvasWithRandomPoints(numPoints, scene) {
 // initialization
 function init() {
   scene = new Scene(objectContext, annotationContext);
-  populateCanvasWithRandomPoints(11, scene);
+  populateCanvasWithRandomPoints(25, scene);
 }
 init();

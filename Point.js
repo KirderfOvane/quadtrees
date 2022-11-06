@@ -1,5 +1,5 @@
 class Point {
-  _pointSize = 10;
+  _pointSize = 5;
   _annotation = {};
   constructor(x, y) {
     (this.x = x),
