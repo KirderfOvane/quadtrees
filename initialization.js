@@ -16,11 +16,13 @@ let scene;
 function populateCanvasWithRandomPoints(numPoints, scene) {
   for (let i = 0; i < numPoints; i++) {
     let point = new Point(
-      Math.floor(Math.random() * CANVASWIDTH * 0.5) + CANVASWIDTH * 0.25,
-      Math.floor(Math.random() * CANVASHEIGHT * 0.5) + CANVASHEIGHT * 0.25
+      Math.floor(Math.random() * CANVASWIDTH),
+      Math.floor(Math.random() * CANVASHEIGHT)
+      // Math.floor(Math.random() * CANVASWIDTH * 0.5) + CANVASWIDTH * 0.25,
+      // Math.floor(Math.random() * CANVASHEIGHT * 0.5) + CANVASHEIGHT * 0.25
     );
     point.draw(objectContext);
-    point.drawAnnotation(annotationContext);
+    // point.drawAnnotation(annotationContext);
     scene.addPoint(point);
   }
 }
@@ -28,6 +30,6 @@ function populateCanvasWithRandomPoints(numPoints, scene) {
 // initialization
 function init() {
   scene = new Scene(objectContext, annotationContext);
-  populateCanvasWithRandomPoints(25, scene);
+  populateCanvasWithRandomPoints(250, scene);
 }
 init();
