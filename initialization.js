@@ -6,10 +6,6 @@ const annotationCanvas = document.getElementById("annotation-layer");
 const objectContext = objectCanvas.getContext("2d");
 const annotationContext = annotationCanvas.getContext("2d");
 
-function clearCanvas() {
-  ctx.clearRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
-}
-
 // global vars
 let scene;
 

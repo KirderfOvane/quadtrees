@@ -1,22 +1,14 @@
-// give me all neighbor points within a range
 // organise points in hierarchial quad-tree
-
-// hypothesis:
-// leaf is subdivision needed for reaching density point goal inside an area
-const densityGoal = 2;
-const areaSize = 25;
-
 let nodeNumber = 0;
-
 class Node {
-  constructor(start, width, height, points, pointDensity, color) {
+  constructor({ start, width, height, points, pointDensity, color, context }) {
     // Node Values
+    this.context = context;
     this.nodeNumber = nodeNumber++;
     this.start = start;
     this.width = width;
     this.height = height;
     this.points = points;
-
     // Node Hierarchy
     this.topLeft = null;
     this.topRight = null;
@@ -27,7 +19,7 @@ class Node {
 
     // Visual Display of Node
     this.color = color;
-    this.drawNode(scene.annotationContext);
+    this.drawNode(context);
   }
 
   subDivide() {
@@ -46,41 +38,45 @@ class Node {
 
     // bottom right
     const bottomRightStart = { x: newWidth + this.start.x, y: newHeight + this.start.y };
+    //start, width, height, points, pointDensity, color, context
+    this.topLeft = new Node({
+      start: topLeftStart,
+      width: newWidth,
+      height: newHeight,
+      points: this.findPointsInRectangle(topLeftStart, newWidth, newHeight),
+      pointDensity: this.pointDensity,
+      color: "green",
+      context: this.context,
+    });
 
-    this.topLeft = new Node(
-      topLeftStart,
-      newWidth,
-      newHeight,
-      this.findPointsInRectangle(topLeftStart, newWidth, newHeight),
-      this.pointDensity,
-      "green"
-    );
+    this.topRight = new Node({
+      start: topRightStart,
+      width: newWidth,
+      height: newHeight,
+      points: this.findPointsInRectangle(topRightStart, newWidth, newHeight),
+      pointDensity: this.pointDensity,
+      color: "red",
+      context: this.context,
+    });
+    this.bottomLeft = new Node({
+      start: bottomLeftStart,
+      width: newWidth,
+      height: newHeight,
+      points: this.findPointsInRectangle(bottomLeftStart, newWidth, newHeight),
+      pointDensity: this.pointDensity,
+      color: "blue",
+      context: this.context,
+    });
 
-    this.topRight = new Node(
-      topRightStart,
-      newWidth,
-      newHeight,
-      this.findPointsInRectangle(topRightStart, newWidth, newHeight),
-      this.pointDensity,
-      "red"
-    );
-    this.bottomLeft = new Node(
-      bottomLeftStart,
-      newWidth,
-      newHeight,
-      this.findPointsInRectangle(bottomLeftStart, newWidth, newHeight),
-      this.pointDensity,
-      "blue"
-    );
-
-    this.bottomRight = new Node(
-      bottomRightStart,
-      newWidth,
-      newHeight,
-      this.findPointsInRectangle(bottomRightStart, newWidth, newHeight),
-      this.pointDensity,
-      "orange"
-    );
+    this.bottomRight = new Node({
+      start: bottomRightStart,
+      width: newWidth,
+      height: newHeight,
+      points: this.findPointsInRectangle(bottomRightStart, newWidth, newHeight),
+      pointDensity: this.pointDensity,
+      color: "orange",
+      context: this.context,
+    });
   }
   divideUntil(numOfPoint) {
     if (this.points.length > numOfPoint) this.subDivide();
@@ -115,10 +111,21 @@ class Node {
 // pointDensity is max allowed points in one node
 // color is quadtree color
 class QuadTree {
-  constructor(points, canvasWidth, canvasHeight, pointDensity, color) {
+  constructor({ points, canvasWidth, canvasHeight, pointDensity, color, context }) {
     this.points = points;
-    this.root = new Node({ x: 0, y: 0 }, canvasWidth, canvasHeight, points, pointDensity, "black");
+
+    this.getPointsWithinArea(context);
+    this.root = new Node({
+      start: { x: 0, y: 0 },
+      width: canvasWidth,
+      height: canvasHeight,
+      points: points,
+      pointDensity,
+      color,
+      context,
+    });
+  }
+  getPointsWithinArea(ctx) {
+    console.log("not yet implemented");
   }
 }
-
-const quadTree = new QuadTree(scene.getPoints(), CANVASWIDTH, CANVASHEIGHT, densityGoal, "black");
