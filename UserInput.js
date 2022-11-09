@@ -7,6 +7,10 @@ function toggleAnnotation() {
   }
 }
 
+function clearCanvas(ctx) {
+  ctx.clearRect(0, 0, CANVASWIDTH, CANVASHEIGHT);
+}
+
 // divide quadtree until densityGoal
 const densityGoal = 2;
 
@@ -20,5 +24,6 @@ const quadTree = new QuadTree({
 });
 
 // given area:
-const area = new Area({ x: 222, y: 44 }, 122, 125, annotationContext);
+const area = new Area({ x: 241, y: 210 }, 122, 125, annotationContext);
 // give me all points within that area:
+quadTree.getPointsWithinArea(area);

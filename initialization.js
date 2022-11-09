@@ -21,7 +21,7 @@ function populateCanvasWithRandomPoints(numPoints, scene) {
         ? Math.floor(Math.random() * CANVASHEIGHT)
         : Math.floor(Math.random() * CANVASHEIGHT * 0.5) + CANVASHEIGHT * 0.25
     );
-    point.draw(objectContext);
+    // point.draw(objectContext);
     //  point.drawAnnotation(annotationContext);
     scene.addPoint(point);
   }
