@@ -6,8 +6,38 @@ const annotationCanvas = document.getElementById("annotation-layer");
 const objectContext = objectCanvas.getContext("2d");
 const annotationContext = annotationCanvas.getContext("2d");
 
+// ui init
+const pointsNumInput = document.getElementById("numPoints");
+pointsNumInput.addEventListener("change", (e) => {
+  clearCanvas(objectContext);
+  //clearCanvas(annotationContext);
+  populateCanvasWithRandomPoints(e.target.value, scene);
+});
+const densityInput = document.getElementById("pointDensity");
+densityInput.addEventListener("change", (e) => {
+  densityGoal = e.target.value;
+  clearCanvas(annotationContext);
+  area = null;
+  quadTree = null;
+  createQuadTree();
+});
+annotationCanvas.addEventListener("click", (e) => {
+  clearCanvas(annotationContext);
+  clearCanvas(objectContext);
+  area = null;
+  createArea(e.offsetX, e.offsetY);
+  quadTree.points.map((p) => {
+    p.color = "black";
+    p.draw(objectContext);
+  });
+  quadTree.getPointsWithinArea(area);
+});
+
 // global vars
 let scene;
+let densityGoal = 2;
+let quadTree;
+let area;
 
 function populateCanvasWithRandomPoints(numPoints, scene) {
   for (let i = 0; i < numPoints; i++) {
@@ -31,5 +61,8 @@ function populateCanvasWithRandomPoints(numPoints, scene) {
 function init() {
   scene = new Scene(objectContext, annotationContext);
   populateCanvasWithRandomPoints(250, scene);
+  createArea();
+  createQuadTree();
+  quadTree.getPointsWithinArea(area);
 }
 init();
