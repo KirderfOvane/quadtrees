@@ -1,7 +1,7 @@
 class Point {
   _pointSize = 5;
   _annotation = {};
-  constructor(x, y) {
+  constructor(x, y, color = "black") {
     (this.x = x),
       (this.y = y),
       (this._annotation = {
@@ -9,8 +9,10 @@ class Point {
         xPos: this.x + 15,
         yPos: this.y + 10,
       });
+    this.color = color;
   }
   draw(context) {
+    context.fillStyle = this.color;
     context.fillRect(this.x, this.y, this._pointSize, this._pointSize);
   }
   drawAnnotation(context) {

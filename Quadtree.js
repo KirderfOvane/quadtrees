@@ -38,7 +38,7 @@ class Node {
 
     // bottom right
     const bottomRightStart = { x: newWidth + this.start.x, y: newHeight + this.start.y };
-    //start, width, height, points, pointDensity, color, context
+
     this.topLeft = new Node({
       start: topLeftStart,
       width: newWidth,
@@ -125,81 +125,88 @@ class QuadTree {
   }
   getPointsWithinArea(area) {
     if (!area) return console.log("No area class provided");
+
     // clear annotations and redraw area
-    clearCanvas(annotationContext);
-    area.draw(annotationContext);
+    // clearCanvas(annotationContext);
+    //area.draw(annotationContext);
+
     let current = this.root;
-    /* console.log("current.x-half", current.start.x + current.width / 2);
-    console.log("current.y-half", current.start.y + current.height / 2);
-    console.log("area.startPosX ", area.startPos.x);
-    console.log("area.startPosY ", area.startPos.y); */
+    const nodesWithinArea = {};
+    const areaX = { start: area.startPos.x, end: area.startPos.x + area.width };
+    const areaY = { start: area.startPos.y, end: area.startPos.y + area.height };
+
+    // traverse tree to find all nodes within area.
+    // we know we found a node within area when next node we try to reach is null
 
     function traverse(current) {
-      //  if (current.nodeNumber !== 0) current.drawNode(current.context);
-      console.log("traversing node: ", current.nodeNumber);
+      let x = current.start.x + current.width / 2;
+      let y = current.start.y + current.height / 2;
+
       // top left
-      if (
-        area.startPos.x < current.start.x + current.width / 2 &&
-        area.startPos.y < current.start.y + current.height / 2
-      ) {
+      if (x > areaX.start && y > areaY.start) {
         if (current.topLeft) {
-          console.log(current.nodeNumber, "top left ", current.topLeft.nodeNumber);
           traverse(current.topLeft);
         } else {
-          console.log("FOUND LEAF: ", current);
-          //  current.drawNode(current.context);
-          //return current;
+          nodesWithinArea[current.nodeNumber] = current;
+          current.color = "purple";
+          current.drawNode(current.context);
         }
       }
       // top right
-      if (
-        area.startPos.x > current.start.x + current.width / 2 &&
-        area.startPos.y < current.start.y + current.height / 2
-      ) {
+      if (areaX.end > x && y > areaY.start) {
         if (current.topRight) {
-          console.log(current.nodeNumber, "top right ", current.topRight.nodeNumber);
           traverse(current.topRight);
         } else {
-          console.log("FOUND LEAF: ", current);
-          //current.drawNode(current.context);
-          // return current;
+          nodesWithinArea[current.nodeNumber] = current;
+          current.color = "blue";
+          current.drawNode(current.context);
         }
       }
       // bottom left
-      if (
-        area.startPos.x < current.start.x + current.width / 2 &&
-        area.startPos.y < current.start.y + current.height / 2
-      ) {
+      if (x > areaX.start && areaY.end > y) {
         if (current.bottomLeft) {
-          console.log(current.nodeNumber, "bottom left ", current.bottomLeft.nodeNumber);
           traverse(current.bottomLeft);
         } else {
-          console.log("FOUND LEAF: ", current);
-          //  current.drawNode(current.context);
-          // return current;
+          nodesWithinArea[current.nodeNumber] = current;
+          current.color = "red";
+          current.drawNode(current.context);
         }
       }
       // bottom right
-      if (
-        area.startPos.x > current.start.x + current.width / 2 &&
-        area.startPos.y > current.start.y + current.height / 2
-      ) {
+      if (areaX.end > x && areaY.end > y) {
         if (current.bottomRight) {
-          console.log(current.nodeNumber, "bottom right ", current.bottomRight.nodeNumber);
           traverse(current.bottomRight);
         } else {
-          console.log("FOUND LEAF: ", current);
-          //  current.drawNode(current.context);
-          // return current;
+          nodesWithinArea[current.nodeNumber] = current;
+          current.color = "black";
+          current.drawNode(current.context);
         }
       }
-      console.log("DEAD END----------------------------------------", current.nodeNumber);
-      if (!first) {
-        current.drawNode(current.context);
-        first = true;
-      }
     }
-    let first = false;
     traverse(current);
+
+    function isWithinArea(point) {
+      return (
+        areaX.start < point.x && areaX.end > point.x && point.y > areaY.start && point.y < areaY.end
+      );
+    }
+
+    function collectPointsFromNodes(nodesWithinArea) {
+      const points = [];
+      for (const node in nodesWithinArea) {
+        nodesWithinArea[node].points.forEach((p) => {
+          if (isWithinArea(p)) {
+            p.color = "green";
+            p.draw(objectContext);
+            points.push(p);
+          } else {
+            p.color = "red";
+            p.draw(objectContext);
+          }
+        });
+      }
+      return points;
+    }
+    return collectPointsFromNodes(nodesWithinArea);
   }
 }
