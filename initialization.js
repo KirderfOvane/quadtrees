@@ -9,17 +9,35 @@ const annotationContext = annotationCanvas.getContext("2d");
 // ui init
 const pointsNumInput = document.getElementById("numPoints");
 pointsNumInput.addEventListener("change", (e) => {
+  console.log(e.target.value);
   clearCanvas(objectContext);
-  //clearCanvas(annotationContext);
+  clearCanvas(annotationContext);
+  area.draw(annotationContext);
   populateCanvasWithRandomPoints(e.target.value, scene);
+  quadTree = null;
+  createQuadTree();
+  const { points, nodes } = quadTree.getPointsWithinArea(area);
+  statsElement.innerHTML = `<p>Num of points found: ${points.length}</p><p>Had to traverse ${
+    Object.keys(nodes).length
+  } number of nodes</p>`;
 });
 const densityInput = document.getElementById("pointDensity");
 densityInput.addEventListener("change", (e) => {
   densityGoal = e.target.value;
   clearCanvas(annotationContext);
-  area = null;
+  clearCanvas(objectContext);
+
+  area.draw(annotationContext);
   quadTree = null;
   createQuadTree();
+  quadTree.points.map((p) => {
+    p.color = "black";
+    p.draw(objectContext);
+  });
+  const { points, nodes } = quadTree.getPointsWithinArea(area);
+  statsElement.innerHTML = `<p>Num of points found: ${points.length}</p><p>Had to traverse ${
+    Object.keys(nodes).length
+  } number of nodes</p>`;
 });
 annotationCanvas.addEventListener("click", (e) => {
   clearCanvas(annotationContext);
@@ -30,8 +48,12 @@ annotationCanvas.addEventListener("click", (e) => {
     p.color = "black";
     p.draw(objectContext);
   });
-  quadTree.getPointsWithinArea(area);
+  const { points, nodes } = quadTree.getPointsWithinArea(area);
+  statsElement.innerHTML = `<p>Num of points found: ${points.length}</p><p>Had to traverse ${
+    Object.keys(nodes).length
+  } number of nodes</p>`;
 });
+const statsElement = document.getElementById("stats");
 
 // global vars
 let scene;
@@ -40,6 +62,7 @@ let quadTree;
 let area;
 
 function populateCanvasWithRandomPoints(numPoints, scene) {
+  scene.clearPoints();
   for (let i = 0; i < numPoints; i++) {
     const fiftyFiftyChance = Math.random() < 0.5;
 
@@ -63,6 +86,10 @@ function init() {
   populateCanvasWithRandomPoints(250, scene);
   createArea();
   createQuadTree();
-  quadTree.getPointsWithinArea(area);
+  const { points, nodes } = quadTree.getPointsWithinArea(area);
+
+  statsElement.innerHTML = `<p>Num of points found: ${points.length}</p><p>Had to traverse ${
+    Object.keys(nodes).length
+  } number of nodes</p>`;
 }
 init();

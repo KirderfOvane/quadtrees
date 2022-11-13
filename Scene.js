@@ -19,4 +19,7 @@ class Scene {
       return;
     }
   }
+  clearPoints() {
+    this._points = [];
+  }
 }

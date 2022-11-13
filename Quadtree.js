@@ -21,7 +21,6 @@ class Node {
     this.color = color;
     this.drawNode(context);
   }
-
   subDivide() {
     // new rectangle size
     const newWidth = this.width / 2;
@@ -86,12 +85,13 @@ class Node {
 
     for (let i = 0; i < this.points.length; i++) {
       if (
-        this.points[i].x < start.x + width &&
-        this.points[i].x > start.x &&
-        this.points[i].y > start.y &&
-        this.points[i].y < start.y + height
+        this.points[i].x <= start.x + width &&
+        this.points[i].x >= start.x &&
+        this.points[i].y >= start.y &&
+        this.points[i].y <= start.y + height
       ) {
         // We can optimize space and some time if we cull this.points array here
+        // Also solves tests where points is exactly on borders
         pointArray.push(this.points[i]);
       }
     }
@@ -137,7 +137,6 @@ class QuadTree {
 
     // traverse tree to find all nodes within area.
     // we know we found a node within area when next node we try to reach is null
-
     function traverse(current) {
       let x = current.start.x + current.width / 2;
       let y = current.start.y + current.height / 2;
@@ -207,6 +206,7 @@ class QuadTree {
       }
       return points;
     }
-    return collectPointsFromNodes(nodesWithinArea);
+    const points = collectPointsFromNodes(nodesWithinArea);
+    return { points, nodes: nodesWithinArea };
   }
 }
